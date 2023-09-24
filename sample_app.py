@@ -23,7 +23,7 @@ class Design2App(App):
                 buttonrow.append(button)
             self.mybuttons.append(buttonrow)
 
-        self.midi_io = MidiIO()
+        self.midi_io = lp()
 
         self.midi_io.register_callback(self.input_message)
 
