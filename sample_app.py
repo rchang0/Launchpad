@@ -42,7 +42,7 @@ class Design2App(App):
     def button_callback(self, instance, row, col):
         # send some midi to the launchpad! code is currently written to demonstrate the RGB range (and off)
         Logger.info(f'Button: {row}, {col}') # include for printing
-        self.midi_io.set_color((True, row, col, (row*32, col*32, (row+col)*16)))
+        self.midi_io.set_color(True, row, col, (row*32, col*32, (row+col)*16))
 
 
 if __name__ == '__main__':
