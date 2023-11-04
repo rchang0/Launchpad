@@ -31,7 +31,7 @@ class Design2App(App):
     
     def input_message(self, midi):
         # (on/off, bool, x, y)
-        print(midi) # include for printing
+        # print(midi) # include for printing
         if midi[1]:
             if midi[0]:
                 self.mybuttons[midi[3]][midi[2]].state = "normal"
