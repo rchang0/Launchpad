@@ -22,6 +22,6 @@ where you should replace #CALLBACK_FUNC with your callback function (function ca
 
 To set colors on a connected launchpad, you will need the following line:
 ```
- self.midi_io.set_color(#BOOL, #x, #y, #(R,G,B))
+ self.midi_io.set_color( #BOOL, #x, #y, #(R,G,B) )
 ```
 where #BOOL, #x, and #y should be replaced with your desired buttons as described in the coordinate system. #(R,G,B) should be replaced with the RGB of your desired color. Each value should be an integer between 0 and 255 (inclusive), where (0,0,0) represents turning the button off. Note that the colors that will actually appear are the best estimates of your desired color given the hardware restrictions.
