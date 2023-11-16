@@ -1,50 +1,49 @@
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.logger import Logger
-import time
-from launchpad import lp
+from launchpad import Launchpad
+from functools import partial
 
-class Design2App(App):
-    name = ""
+class LaunchpadSampleApp(App):
+
     def build(self):
-        from functools import partial
         layout = GridLayout(cols=8)
 
-        self.mybuttons = list() # access buttons by [row][col] in this list of lists
+        self.my_buttons = list() # access buttons by [row][col] in this list of lists
 
         for row in range(8):
-            buttonrow = list()
+            button_row = list()
             for col in range(8):
                 button = Button()
                 layout.add_widget(button)
-                button.bind(on_press=partial(self.button_callback, row=row, col=col))
-                buttonrow.append(button)
-            self.mybuttons.append(buttonrow)
+                button.bind(on_press = partial(self.button_callback, row=row, col=col, down=True))
+                button.bind(on_release = partial(self.button_callback, row=row, col=col, down=False))
+                button_row.append(button)
+            self.my_buttons.append(button_row)
 
-        self.midi_io = lp()
-
-        self.midi_io.register_callback(self.input_message)
+        self.launchpad = Launchpad()
+        self.launchpad.register_callback(self.input_message)
 
         return layout
     
-    def input_message(self, midi):
-        # (on/off, bool, x, y)
-        # print(midi) # include for printing
-        if midi[1]:
-            if midi[0]:
-                self.mybuttons[midi[3]][midi[2]].state = "normal"
+    def input_message(self, main_grid, x, y, down_up):
+        print('input:', main_grid, x, y, down_up)
+
+        if main_grid:
+            if down_up:
+                self.my_buttons[y][x].state = "down"
             else:
-                self.mybuttons[midi[3]][midi[2]].state = "down"
-        return
+                self.my_buttons[y][x].state = "normal"
 
-    def button_callback(self, instance, row, col):
-        # send some midi to the launchpad! code is currently written to demonstrate the RGB range (and off)
-        Logger.info(f'Button: {row}, {col}') # include for printing
-        self.midi_io.set_color(True, row, col, (row*32, col*32, (row+col)*16))
-
+    def button_callback(self, _, row, col, down):
+        # set colors on the launchpad buttons - demonstrating the RGB range (and off)
+        Logger.info(f'Button: {row}, {col} => {down}') # include for printing
+        if down:
+            self.launchpad.set_color(True, row, col, (row*32, col*32, (row+col)*16))
+        else:
+            self.launchpad.set_color(True, row, col, (0,0,0))
 
 if __name__ == '__main__':
-    thing = Design2App()
-    thing.run()
+    app = LaunchpadSampleApp()
+    app.run()
